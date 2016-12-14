@@ -89,23 +89,20 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     searchTree = util.Stack()
-    start = (problem.getStartState(), {})
-    type(start)
-    searchTree.push(start)
     explored = set([])
+    start = (problem.getStartState(), {})
+
+    searchTree.push(start)
 
     while True:
         if searchTree.isEmpty():
             return 'failure'
         leafNode = searchTree.pop()
-
         if problem.isGoalState(leafNode[0]):
             return leafNode[1]
-
         if not leafNode[0] in explored:
             explored.add(leafNode[0])
             successors = problem.getSuccessors(leafNode[0])
-
             for i in range(len(successors)):
                 nodes = list(leafNode[1])
                 nodes.append(successors[i][1])
@@ -114,34 +111,46 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     searchTree = util.Queue()
-    start = (problem.getStartState(), {})
-    type(start)
-    searchTree.push(start)
     explored = set([])
+    start = (problem.getStartState(), {})
+
+    searchTree.push(start)
 
     while True:
         if searchTree.isEmpty():
             return 'failure'
         leafNode = searchTree.pop()
-
         if problem.isGoalState(leafNode[0]):
             return leafNode[1]
-
         if not leafNode[0] in explored:
             explored.add(leafNode[0])
             successors = problem.getSuccessors(leafNode[0])
-
             for i in range(len(successors)):
                 nodes = list(leafNode[1])
                 nodes.append(successors[i][1])
                 searchTree.push((successors[i][0], nodes))
 
-
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    searchTree = util.PriorityQueue()
+    explored = set([])
+    start = (problem.getStartState(), {})
 
+    searchTree.push(start, problem.getCostOfActions(start[1]))
+
+    while True:
+        if searchTree.isEmpty():
+            return 'failure'
+        leafNode = searchTree.pop()
+        if problem.isGoalState(leafNode[0]):
+            return leafNode[1]
+        if not leafNode[0] in explored:
+            explored.add(leafNode[0])
+            successors = problem.getSuccessors(leafNode[0])
+            for i in range(len(successors)):
+                nodes = list(leafNode[1])
+                nodes.append(successors[i][1])
+                searchTree.push((successors[i][0], nodes), problem.getCostOfActions(nodes))
 
 def nullHeuristic(state, problem=None):
     """
