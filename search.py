@@ -108,6 +108,7 @@ def depthFirstSearch(problem):
                 nodes.append(successors[i][1])
                 searchTree.push((successors[i][0], nodes))
 
+
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     searchTree = util.Queue()
@@ -129,6 +130,7 @@ def breadthFirstSearch(problem):
                 nodes = list(leafNode[1])
                 nodes.append(successors[i][1])
                 searchTree.push((successors[i][0], nodes))
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -152,6 +154,7 @@ def uniformCostSearch(problem):
                 nodes.append(successors[i][1])
                 searchTree.push((successors[i][0], nodes), problem.getCostOfActions(nodes))
 
+
 def nullHeuristic(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
@@ -162,8 +165,27 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    searchTree = util.PriorityQueue()
+    explored = set([])
+    start = (problem.getStartState(), {})
+    startCost = heuristic(problem.getStartState(), problem)
+
+    searchTree.push(start, problem.getCostOfActions(start[1]) + startCost)
+
+    while True:
+        if searchTree.isEmpty():
+            return 'failure'
+        leafNode = searchTree.pop()
+        if problem.isGoalState(leafNode[0]):
+            return leafNode[1]
+        if not leafNode[0] in explored:
+            explored.add(leafNode[0])
+            successors = problem.getSuccessors(leafNode[0])
+            for i in range(len(successors)):
+                nodes = list(leafNode[1])
+                nodes.append(successors[i][1])
+                searchTree.push((successors[i][0], nodes),
+                                problem.getCostOfActions(nodes) + heuristic(successors[i][0], problem))
 
 
 # Abbreviations
